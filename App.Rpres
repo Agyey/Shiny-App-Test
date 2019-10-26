@@ -1,0 +1,86 @@
+App
+========================================================
+author: Agyey Arya
+date: 26th October 2019
+autosize: true
+
+Normal Distribution
+========================================================
+
+The app models the normal distribution using parameters,
+mean and standard deviation.
+
+Code to generate distribution
+========================================================
+
+```{r}
+mean = 0
+standard_deviation = 1
+y <- rnorm(10000,mean=mean,sd=standard_deviation)
+```
+
+Example plot
+========================================================
+
+```{r, echo=FALSE}
+hist(y)
+```
+
+
+Server.R Code
+========================================================
+```{r}
+library(shiny)
+
+# Define server logic required to draw a histogram
+shinyServer(function(input, output) {
+   
+  output$distPlot <- renderPlot({
+    
+    # generate bins based on input$bins from ui.R
+    y <- rnorm(10000,mean = input$u,sd = input$std)
+    hist(y,xlim=c(-5,5),main = 'Normal Distribution')
+    
+  })
+  
+})
+```
+
+UI.r Code
+========================================================
+
+```{r}
+library(shiny)
+
+# Define UI for application that draws a histogram
+shinyUI(fluidPage(
+  
+  # Application title
+  titlePanel("Normal Distribution Modeling"),
+  
+  # Sidebar with a slider input for number of bins 
+  sidebarLayout(
+    sidebarPanel(
+       sliderInput("u",
+                   "Mean",
+                   min = -2,
+                   max = 2,
+                   value = 0),
+       sliderInput("std",
+                   "Standar Deviation",
+                   min = 0,
+                   max = 4,
+                   value = 1)
+    ),
+
+    
+    # Show a plot of the generated distribution
+    mainPanel(
+       plotOutput("distPlot"),
+       h1('Documentation'),
+       p('Vary the slider to adjust Model parameters and see the effect of the graph')
+       
+    )
+  )
+))
+```
